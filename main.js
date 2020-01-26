@@ -5,16 +5,15 @@ for (binding of bindings) {
   if(smartphone[3].matches) {
     input.addEventListener('change', updateValue)
   }
-  input.addEventListener('input', () => { updateDisplay(binding) })
-  updateDisplay(binding)
-  updateValue()
+  input.addEventListener('input', updateDisplay.bind(binding))
+  updateDisplay.apply(binding, [true])
 }
 
 
 window.addEventListener("orientationchange", updateValue)
 window.addEventListener("resize", resizeChart)
 window.addEventListener("DOMContentLoaded", function() {
-  updateValue
+  updateValue()
   if(smartphone[0].matches || smartphone[1].matches || smartphone[2].matches) {
     openSliderPopup(0)
   }
@@ -25,14 +24,11 @@ function updateValue() {
   getStartAge(),getEndAge())
 }
 
-function updateDisplay(b) {
-  const input = b.input
-  const output = b.output
+function updateDisplay(shouldPreventUpdateValue) {
+  const input = this.input
+  const output = this.output
   let renteAlterStart = parseInt(renteneintrittsalter.input.value)
   let renteAlterEnde = parseInt(rentenaustrittsalter.input.value)
-  if (!input) {
-    console.log('PRoplemo')
-  }
 
   if(input.id == "rangeRenditeerwartung") {
     output.innerText = input.value + "%"
@@ -97,7 +93,7 @@ function updateDisplay(b) {
   }
 
 
-  if(!smartphone[3].matches) {
+  if(!smartphone[3].matches && shouldPreventUpdateValue !== true) {
     updateValue()
   }
 
